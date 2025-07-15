@@ -5,7 +5,7 @@ This repository provisions an S3 bucket and a Lambda function behind an API Gate
 ## Infrastructure
 
 - **S3 Bucket**: `ontoscale-create-with-openai-codex`
-- **Terraform Backend**: `arn:aws:s3:::ontoscale-terraform-backend`
+- **Terraform Backend**: `arn:aws:s3:::ontoscale-terraform-backend` (region `us-east-1`)
 - **Lambda**: Python function creating a file in the bucket.
 - **API Gateway**: HTTP endpoint invoking the Lambda.
 
