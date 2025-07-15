@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    archive = {
+      source  = "hashicorp/archive"
+      version = "~> 2.0"
+    }
   }
   backend "s3" {
     bucket = "ontoscale-terraform-backend"
@@ -55,7 +59,7 @@ resource "aws_iam_role_policy" "lambda_s3" {
   policy = data.aws_iam_policy_document.lambda_s3.json
 }
 
-resource "archive_file" "lambda_zip" {
+data "archive_file" "lambda_zip" {
   type        = "zip"
   source_dir  = "${path.module}/lambda"
   output_path = "${path.module}/lambda.zip"
@@ -66,8 +70,8 @@ resource "aws_lambda_function" "create_file" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "handler.lambda_handler"
   runtime          = "python3.11"
-  filename         = archive_file.lambda_zip.output_path
-  source_code_hash = filebase64sha256(archive_file.lambda_zip.output_path)
+  filename         = data.archive_file.lambda_zip.output_path
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   environment {
     variables = {
       BUCKET_NAME = aws_s3_bucket.bucket.bucket
